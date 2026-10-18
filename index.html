@@ -559,7 +559,7 @@
                 </div>
             </div>
             <div class="header-actions">
-                <button class="icon-btn" onclick="openQRGenerator()" title="Generar QR de Mesas">
+                <button class="icon-btn" onclick="openAuthModal()" title="Generar QR de Mesas (Administración)">
                     <i class="fa-solid fa-qrcode"></i>
                 </button>
                 <button class="icon-btn" onclick="toggleCart()" title="Ver Pedido">
@@ -604,6 +604,26 @@
             <span id="floatCount">0 items</span>
         </div>
         <div style="font-weight: 800;" id="floatTotal">$0.00</div>
+    </div>
+
+    <!-- MODAL AUTENTICACIÓN / PIN -->
+    <div class="modal-overlay" id="authModal">
+        <div class="drawer-content">
+            <div class="drawer-header">
+                <h3><i class="fa-solid fa-lock" style="color: var(--primary);"></i> Acceso Administrador</h3>
+                <button class="close-modal" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="drawer-body">
+                <div class="form-group">
+                    <label>Ingresa el código de acceso (PIN):</label>
+                    <input type="password" id="pinInput" class="form-control" placeholder="••••" maxlength="6" style="font-size: 1.2rem; text-align: center; letter-spacing: 4px;">
+                </div>
+                <div id="pinError" style="color: #ff4d4d; font-size: 0.8rem; display: none; margin-bottom: 10px; text-align: center;">
+                    ⚠️ Código incorrecto. Intenta nuevamente.
+                </div>
+                <button class="print-btn" onclick="verifyPin()">Ingresar</button>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL CARRITO / ENVIAR A COCINA -->
@@ -710,6 +730,9 @@
     </div>
 
     <script>
+        // PIN DE ACCESO ADMINISTRADOR
+        const ADMIN_PIN = "4381";
+
         // DATOS DEL MENÚ
         const menuProducts = [
             // PAPIPOLLO
@@ -855,6 +878,27 @@
 
         function toggleCart() {
             document.getElementById('cartModal').classList.toggle('open');
+        }
+
+        // CONTROL DE AUTENTICACIÓN ADMIN
+        function openAuthModal() {
+            document.getElementById('pinInput').value = '';
+            document.getElementById('pinError').style.display = 'none';
+            document.getElementById('authModal').classList.add('open');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('open');
+        }
+
+        function verifyPin() {
+            const inputPin = document.getElementById('pinInput').value;
+            if (inputPin === ADMIN_PIN) {
+                closeAuthModal();
+                openQRGenerator();
+            } else {
+                document.getElementById('pinError').style.display = 'block';
+            }
         }
 
         // CAMBIO DE MESA
